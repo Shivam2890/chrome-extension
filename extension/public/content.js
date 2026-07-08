@@ -11,8 +11,12 @@ document.addEventListener('mouseup', (e) => {
     }
 })
 
+let btn = null
 function createButton(selectText) {
-    const btn = document.createElement('button')
+    // if (btn) {
+    //     btn.remove()
+    // }
+    btn = document.createElement('button')
     btn.innerText = 'Get Text'
     btn.style.backgroundColor = 'black'
     btn.style.position = 'fixed'
@@ -27,7 +31,17 @@ function createButton(selectText) {
     document.body.appendChild(btn)
 }
 
-function sendTextToBackground(text) {
+async function sendTextToBackground(text) {
+
+    const storage = await chrome.storage.local.get(['resume'])
+    console.log(storage, 'complete sotrage')
+    // console.log(storage.resume.content, 'content of resume')
+
+    if (!storage.resume) {
+        alert('upload resume')
+        return
+    }
+
     chrome.runtime.sendMessage(
         {
             type: `SELECTED_TEXT`,

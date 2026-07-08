@@ -1,5 +1,6 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 3, 
+  
   "name": "AI Text Helper",
   "description": "Select text from any website and explain it using AI",
   "version": "1.0.0",
