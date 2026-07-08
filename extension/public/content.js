@@ -45,7 +45,7 @@ async function sendTextToBackground(text) {
     chrome.runtime.sendMessage(
         {
             type: `SELECTED_TEXT`,
-            payload: text
+            payload: { selectText: text, resume: storage.resume }
         }
     )
 }
