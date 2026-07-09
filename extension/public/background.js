@@ -6,6 +6,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         callApi(message.payload, sendResponse)
 
+        //Keep the message port opne untill sendResponse is called
+        return true
     }
 })
 
@@ -30,7 +32,6 @@ async function callApi(message, sendResponse) {
         })
         .catch(err => {
             console.log(err, 'err while fethcing')
+            sendResponse("something went wrong")
         })
-
-
 }
