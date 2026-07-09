@@ -6,6 +6,10 @@ document.addEventListener('mouseup', (e) => {
 
     console.log(selectText, 'selected text')
 
+    if (e.target.id == "btn") {
+        return
+    }
+
     if (selectText.length > 15) {
         createButton(selectText)
     }
@@ -13,10 +17,11 @@ document.addEventListener('mouseup', (e) => {
 
 let btn = null
 function createButton(selectText) {
-    // if (btn) {
-    //     btn.remove()
-    // }
+    if (btn) {
+        btn.remove()
+    }
     btn = document.createElement('button')
+    btn.id = "btn"
     btn.innerText = 'Get Text'
     btn.style.backgroundColor = 'black'
     btn.style.position = 'fixed'
@@ -33,7 +38,7 @@ function createButton(selectText) {
 
 async function sendTextToBackground(text) {
 
-    const storage = await chrome.storage.local.get(['resume'])
+    const storage = await chrome.storage.local.get(["resume"])
     console.log(storage, 'complete sotrage')
     // console.log(storage.resume.content, 'content of resume')
 
@@ -45,7 +50,17 @@ async function sendTextToBackground(text) {
     chrome.runtime.sendMessage(
         {
             type: `SELECTED_TEXT`,
-            payload: { selectText: text, resume: storage.resume }
+            payload: { resume: storage.resume, jd: text }
+        },
+        (response) => {
+            console.log(response, 'response form backgorund.js')
+
+            btn.textContent = response
+
+            setTimeout(() => {
+                btn.remove()
+            }, 2000)
         }
     )
 }
+//  { selectText: text, resume: storage.resume }

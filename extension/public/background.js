@@ -15,20 +15,22 @@ async function callApi(message, sendResponse) {
         resumeInBase64: message.resume.content,
         jd: message.jd
     }
-    try {
-        const fetchResponse = await fetch(`http://localhost:4000/get-ats`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            })
+    fetch(`http://localhost:4000/get-ats`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+        .then((data) => data.json())
+        .then((res) => {
+            console.log(res, 'data resospone')
+            sendResponse(res.data.ats)
+        })
+        .catch(err => {
+            console.log(err, 'err while fethcing')
+        })
 
-        const apiResponse = fetchResponse.json()
-        console.log(apiResponse, 'api response in backgeound.js')
-    } catch (err) {
-        console.log(err)
-        sendResponse("something went wrong")
-    }
+
 }

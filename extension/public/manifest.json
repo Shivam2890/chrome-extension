@@ -1,17 +1,18 @@
 {
-  "manifest_version": 3, 
-  
-  "name": "AI Text Helper",
-  "description": "Select text from any website and explain it using AI",
+  "manifest_version": 3,
+
+  "name": "AI Resume Analyser",
+  "description": "Calculate ATS score and give information about resume compared with job description",
   "version": "1.0.0",
   "action": {
     "default_popup": "index.html",
-    "default_title": "AI Helper"
+    "default_title": "Resume Analyser"
   },
   "permissions": ["storage", "activeTab", "scripting"],
   "background": {
     "service_worker": "background.js"
   },
+  "host_permissions":["https://*//*"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
