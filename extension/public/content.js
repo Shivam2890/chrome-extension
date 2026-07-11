@@ -39,13 +39,15 @@ function createButton(selectText) {
 async function sendTextToBackground(text) {
 
     const storage = await chrome.storage.local.get(["resume"])
-    console.log(storage, 'complete sotrage')
+    // console.log(storage, 'complete sotrage')
     // console.log(storage.resume.content, 'content of resume')
 
     if (!storage.resume) {
         alert('upload resume')
         return
     }
+
+    console.log('resume uploaded')
 
     chrome.runtime.sendMessage(
         {
@@ -56,6 +58,8 @@ async function sendTextToBackground(text) {
             console.log(response, 'response form backgorund.js')
 
             btn.textContent = response
+            btn.style.color = "blue"
+            btn.style.text = "black"
 
             setTimeout(() => {
                 btn.remove()

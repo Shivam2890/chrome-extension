@@ -2,17 +2,17 @@ console.log('backgorun is running')
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.type === `SELECTED_TEXT`) {
-        console.log(message.payload, 'payload')
+        // console.log(message.payload, 'payload') // resume and jd
 
         callApi(message.payload, sendResponse)
-
-        //Keep the message port opne untill sendResponse is called
+        // sendResponse("some data coming form the callApi")
+        //Keep the message port open untill sendResponse is called
         return true
     }
 })
 
 async function callApi(message, sendResponse) {
-    console.log(message, 'data coming from content to bakcground')
+    // console.log(message, 'data coming from content to bakcground') // resume and jd
     const body = {
         resumeInBase64: message.resume.content,
         jd: message.jd
@@ -23,12 +23,16 @@ async function callApi(message, sendResponse) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify(body) // resumeinBase64 and jd
         })
-        .then((data) => data.json())
+        .then((data) => {
+            data
+            console.log(data.data.json(), 'data in json')
+            return data.data.json()
+        })
         .then((res) => {
-            console.log(res, 'data resospone')
-            sendResponse(res.data.ats)
+            console.log(JSON.parse(res.data).ats, 'data resospone') //this data is comming in json
+            sendResponse(JSON.parse(res.data).ats) // data form the ai
         })
         .catch(err => {
             console.log(err, 'err while fethcing')

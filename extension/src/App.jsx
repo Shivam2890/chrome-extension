@@ -3,7 +3,6 @@ import React from 'react'
 const App = () => {
 
   function getResume(e) {
-    console.log(e, 'fomr evet')
     const file = e.target.files[0]
     if (!file) {
       alert('upload resume')
@@ -11,12 +10,13 @@ const App = () => {
     }
     const reader = new FileReader()
 
-    reader.onload =  function (e) {
+    reader.onload = function (e) {
       const pdfIntoString = e.target.result
 
-       chrome.storage.local.set({ resume: { name: file.name, content: pdfIntoString } })
+      chrome.storage.local.set({ resume: { name: file.name, content: pdfIntoString } })
     }
 
+    //here we are reading file data first
     reader.readAsDataURL(file)
   }
 
