@@ -80,7 +80,7 @@ app.post("/get-ats", async (req, res) => {
     }
     catch (err) {
         console.log(err, 'post in server')
-        res.status(500).json({ Message: err })
+        res.status(500).json({ Message: err.message || err })
     }
 })
 
