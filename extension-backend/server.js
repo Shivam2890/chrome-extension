@@ -23,7 +23,7 @@ app.post("/get-ats", async (req, res) => {
 
     //convert base64 data into buffer that means pdf data into binary format
     const base64 = req.body.resumeInBase64.split(",")[1] // resume only 
-    const dataInBuffer = Buffer.from(base64, 'base64')
+    const dataInBuffer = Buffer.from(base64, 'base64') //Decode Base64 into binary bytes
 
     //convert buffer into text format using npm pdf-parse
     const parser = new PDFParse({ data: dataInBuffer })
@@ -37,7 +37,7 @@ app.post("/get-ats", async (req, res) => {
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 
     try {
-          
+
         const client = new OpenAI({
             apiKey: process.env.GROQ_API_KEY,
             baseURL: "https://api.groq.com/openai/v1",
@@ -46,33 +46,33 @@ app.post("/get-ats", async (req, res) => {
         const response = await client.responses.create({
             model: "openai/gpt-oss-20b",
             input: `
-//             Compare the following resume with the given job description.
+             Compare the following resume with the given job description.
 
-//             RESUME:
-//             ${pdfActualText.text}
+             RESUME:
+             ${pdfActualText.text}
 
-//             JOB DESCRIPTION:
-//             ${jd}
+             JOB DESCRIPTION:
+             ${jd}
 
-//             Analyze how well the resume matches the job description.
+             Analyze how well the resume matches the job description.
 
-//             Return ONLY valid JSON in exactly this structure:
+            Return ONLY valid JSON in exactly this structure:
 
-//             {
-//                 "ats": "70%",
-//                 "missingKeywords": ["python"],
-//                 "matchingKeywords": ["react", "javascript", "express"],
-//                 "suggestion": "Add more details about projects and include the missing skills relevant to the job description."
-//             }
+             {
+                 "ats": "70%",
+                 "missingKeywords": ["python"],
+                 "matchingKeywords": ["react", "javascript", "express"],
+                "suggestion": "Add more details about projects and include the missing skills relevant to the job description."
+            }
 
-//             Rules:
-//             - ats must represent the resume match percentage against the job description.
-//             - missingKeywords must contain important skills or keywords present in the job description but missing from the resume.
-//             - matchingKeywords must contain important skills or keywords found in both the resume and job description.
-//             - suggestion must give a short, practical improvement suggestion.
-//             - Do not include markdown.
-//             - Do not include explanations outside the JSON object.
-//             `,
+            Rules:
+            - ats must represent the resume match percentage against the job description.
+            - missingKeywords must contain important skills or keywords present in the job description but missing from the resume.
+            - matchingKeywords must contain important skills or keywords found in both the resume and job description.
+            - suggestion must give a short, practical improvement suggestion.
+            - Do not include markdown.
+            - Do not include explanations outside the JSON object.
+            `,
         });
         console.log(response.output_text);
 

@@ -15,28 +15,47 @@ const App = () => {
     }
   }, [])
 
+
+  //funtion triggered by the input onchange
   function getResume(e) {
+
+    // console.log(e.target.files[0], 'files info')
+
+    //file is for only giving the name and form the fileReader webapi its reads the pdf only
     const file = e.target.files[0]
     if (!file) {
       return
     }
-    
+
     if (file.type !== 'application/pdf') {
       setStatusMsg('Please select a PDF file.')
       return
     }
 
-    const reader = new FileReader()
+    const reader = new FileReader() //a webapi read file content (raw data buffer)
+
+    //2- after browser reads the files asynchronously in the background then only this onload event fire
     reader.onload = function (event) {
+
+      // console.log(event.target.result , 'event of reader onload')
+
       const pdfIntoString = event.target.result
 
       if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.set({ resume: { name: file.name, content: pdfIntoString } }, () => {
-          setResumeName(file.name)
-          setStatusMsg('Resume uploaded successfully!')
-          setTimeout(() => setStatusMsg(''), 3000)
-        })
-      } else {
+
+        //it store in the devTool of extension(npm run build) in application-extension-local
+        chrome.storage.local.set(
+          { resume: { name: file.name, content: pdfIntoString } }, () => {
+
+            console.log('chorme saved data')
+            setResumeName(file.name)
+            setStatusMsg('Resume uploaded successfully!')
+            setTimeout(() => setStatusMsg('Stored chrome extension'), 3000)
+          })
+
+      }
+
+      else {
         // Fallback for development/non-extension context
         setResumeName(file.name)
         setStatusMsg('Resume saved locally (dev mode)!')
@@ -44,7 +63,9 @@ const App = () => {
       }
     }
 
+    //1 -first it read the file then reader.onload runs
     reader.readAsDataURL(file)
+    //readAsDataURL does not give the data sync. the actual data comes in the event obj inside onload
   }
 
   return (
@@ -57,7 +78,7 @@ const App = () => {
             AI Resume Analyzer
           </h1>
         </div>
-        
+
         {/* Subtitle / Description */}
         <p className="text-xs text-slate-400 mb-5 leading-relaxed">
           Upload your PDF resume here. Then select job description text on any webpage, click the button to analyze and get your ATS match.
@@ -92,12 +113,12 @@ const App = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
           </svg>
           {resumeName ? 'Replace Resume (PDF)' : 'Upload Resume (PDF)'}
-          <input 
-            type="file" 
-            accept="application/pdf" 
-            name="Resume" 
-            className="hidden" 
-            onChange={getResume} 
+          <input
+            type="file"
+            accept="application/pdf"
+            name="Resume"
+            className="hidden"
+            onChange={getResume}
           />
         </label>
 
